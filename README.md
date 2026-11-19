@@ -6,7 +6,8 @@
 
 <p align="center">
   <b>Watch Claude Code work inside a 3D city built from your code.</b><br>
-  A VS Code extension. <i>Coming soon.</i><br><br>
+  For VS Code, Cursor and Windsurf.<br><br>
+  <a href="https://open-vsx.org/extension/fguerreir0/agentville"><img src="https://img.shields.io/open-vsx/v/fguerreir0/agentville?label=Open%20VSX&color=3df2ff" alt="Open VSX version"></a><br><br>
   <a href="https://fguerreir0.github.io/agentville/">Website</a> ·
   <a href="#install">Install</a> ·
   <a href="#help">Help</a>
@@ -29,9 +30,12 @@ amber with a **!**, so you never miss it.
 
 ## Install
 
-> **Coming soon.** Click **Watch → Custom → Releases** on this repo to hear when it's out.
-
-1. Install **Agentville** in VS Code.
+1. **Install Agentville:**
+   - **Cursor, Windsurf, VSCodium:** search for **Agentville** in the Extensions view, or open it on
+     [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville).
+   - **VS Code:** the Marketplace listing is on its way. Until then, download the `.vsix` from
+     [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville) (**Download**), then in VS Code open the Extensions view,
+     **⋯ → Install from VSIX…**, and pick the file.
 2. Click **Install** when it offers to set up its Claude Code plugin.
 3. Start Claude Code in the folder you have open. That's it.
 
