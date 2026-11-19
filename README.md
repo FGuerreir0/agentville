@@ -75,8 +75,19 @@ Command Palette. Either way, the city follows Claude Code wherever it runs.
 ### Chat with Claude, right beside the city
 
 In the big view, Agentville has its own chat panel: pick the model and mode, approve edits
-with a diff, and see time, tokens, cost and your plan's usage limits for every run. Click any
-building to open the file or ask Claude about it.
+with a diff, and see time, tokens and cost for every run. Click any building to open the file
+or ask Claude about it.
+
+The chat runs Claude Code on **your own Anthropic API key**, which you create in the
+[Claude Console](https://platform.claude.com/settings/keys); Anthropic bills its usage to
+you, separately from any Claude plan. The key stays in your system keychain. The city doesn't
+need a key: it follows Claude Code wherever you run it.
+
+**Why an API key and not my Claude plan?** The chat is built on Anthropic's Claude Agent SDK,
+and [Anthropic's terms](https://code.claude.com/docs/en/legal-and-compliance) don't allow
+third-party products built on it to run on Free, Pro or Max plan logins: they have to use API
+keys. Your plan keeps working in Claude Code itself, in the terminal or the Claude Code panel,
+and Agentville's city shows those sessions just the same.
 
 <img src="docs/media/permission.png" alt="A permission card with a diff">
 
@@ -92,10 +103,10 @@ slows Claude down. The plugin is open source: [`plugin/`](plugin/).
 
 ## Does it increase my Claude usage?
 
-No. The city only listens to events Claude Code already sends; it never calls the model.
-The chat is a normal Claude Code session with nothing added to your prompts, so it uses the
-same as the terminal would. It also helps you spend less: a budget per conversation, a
-warning before your plan's limits, and Haiku for quick questions.
+The city, no: it only listens to events Claude Code already sends and never calls the model.
+The chat runs on your own API key, billed by Anthropic per use, with nothing added to your
+prompts. It helps you keep that in check: the cost of every run, a budget per conversation,
+and Haiku for quick questions.
 
 ## Pricing
 

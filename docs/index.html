@@ -200,7 +200,7 @@
   <section id="chat">
     <h2>Chat</h2>
     <h3>Claude Code itself, in a panel beside the city.</h3>
-    <p class="muted">It runs the <span style="color:var(--text)">claude</span> you already have installed, in your workspace, and everything it does plays out in the city.</p>
+    <p class="muted">It runs the <span style="color:var(--text)">claude</span> you already have installed, in your workspace, on your own Anthropic API key, and everything it does plays out in the city. The city itself needs no key.</p>
     <div class="two">
       <figure>
         <img src="media/permission.png" alt="A permission card for an edit, with a diff" loading="lazy">
@@ -211,7 +211,7 @@
         <figcaption><b>Click a building</b> to open the file or ask Claude about it. Shift+click to collect several.</figcaption>
       </figure>
     </div>
-    <p class="wide muted">Each run shows its time, tokens and cost. Bars show the context window and your plan's 5-hour and weekly limits, with a warning before you hit them. You can switch model, effort and permission mode mid-conversation, set a budget, and pick up conversations you started in the terminal.</p>
+    <p class="wide muted">Each run shows its time, tokens and cost, and a bar shows the context window. Usage is billed by Anthropic to your API key; a budget per conversation keeps it in check. You can switch model, effort and permission mode mid-conversation, set a budget, and pick up conversations you started in the terminal.</p>
   </section>
 
   <section id="privacy">
@@ -249,8 +249,10 @@ event.prompt = cut(payload.prompt, <span class="n">80</span>)</pre>
     <dl>
       <dt>Do I have to use Agentville's chat?</dt>
       <dd>No. The city follows Claude Code in the terminal and in the Claude Code extension too.</dd>
+      <dt>Why does the chat need an API key, and not my Claude plan?</dt>
+      <dd>The chat is built on Anthropic's Claude Agent SDK, and <a href="https://code.claude.com/docs/en/legal-and-compliance">Anthropic's terms</a> don't allow third-party products built on it to run on Free, Pro or Max plan logins: they have to use API keys. Your plan keeps working in Claude Code itself, in the terminal or the Claude Code panel, and the city shows those sessions just the same.</dd>
       <dt>Does it increase my Claude usage?</dt>
-      <dd>No. The city only listens to events Claude Code already sends; it never calls the model. The chat is a normal Claude Code session with nothing added to your prompts, so it uses the same as the terminal would. It also helps you spend less: a budget per conversation, a warning before your plan's limits, and Haiku for quick questions.</dd>
+      <dd>The city, no: it only listens to events Claude Code already sends and never calls the model. The chat runs on your own Anthropic API key, billed by Anthropic per use, with nothing added to your prompts. It helps you keep that in check: the cost of every run, a budget per conversation, and Haiku for quick questions.</dd>
       <dt>Does it slow Claude down?</dt>
       <dd>No. The plugin's hooks are asynchronous.</dd>
       <dt>How big a repository can it draw?</dt>
