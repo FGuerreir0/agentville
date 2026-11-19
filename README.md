@@ -29,9 +29,18 @@ amber with a **!**, so you never miss it.
 1. **Install Agentville:**
    - **Cursor, Windsurf, VSCodium:** search for **Agentville** in the Extensions view, or open it on
      [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville).
-   - **VS Code:** the Marketplace listing is on its way. Until then, download the `.vsix` from
-     [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville) (**Download**), then in VS Code open the Extensions view,
-     **⋯ → Install from VSIX…**, and pick the file.
+   - **VS Code:** the Marketplace listing is on its way. Until then, install it from a file:
+     1. On [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville), click **Download**
+        to get `fguerreir0.agentville-<version>.vsix`.
+     2. In VS Code, open the Extensions view (`Ctrl+Shift+X`, or `Cmd+Shift+X` on a Mac), click
+        **⋯** at its top, choose **Install from VSIX…**, and pick the file.
+     3. Reload the window when VS Code asks.
+
+     Or from a terminal: `code --install-extension fguerreir0.agentville-<version>.vsix`.
+
+     > **Don't double-click the `.vsix`.** On Windows with Visual Studio installed, that opens
+     > Visual Studio's installer, which fails with *"One or more extensions are for Visual
+     > Studio Code"*. Install it from inside VS Code as above.
 2. Click **Install** when it offers to set up its Claude Code plugin.
 3. Start Claude Code in the folder you have open. That's it.
 
