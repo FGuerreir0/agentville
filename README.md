@@ -36,7 +36,6 @@ amber with a **!**, so you never miss it.
 3. Start Claude Code in the folder you have open. That's it.
 
 You need [Claude Code](https://code.claude.com) and VS Code 1.99 or later.
-No API key: it uses your existing Claude Code login.
 
 ## What you see
 
