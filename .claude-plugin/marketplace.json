@@ -1,0 +1,12 @@
+{
+  "name": "agentville",
+  "owner": { "name": "Fábio Guerreiro" },
+  "metadata": { "description": "Agentville: watch Claude Code and its subagents work in a 3D city of your codebase." },
+  "plugins": [
+    {
+      "name": "agentville",
+      "source": "./plugin",
+      "description": "Shows Claude Code and its subagents working inside a 3D city of your codebase, in the Agentville VS Code extension."
+    }
+  ]
+}

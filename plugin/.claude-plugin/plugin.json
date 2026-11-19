@@ -1,0 +1,8 @@
+{
+  "name": "agentville",
+  "version": "0.1.0",
+  "description": "Shows Claude Code and its subagents working inside a 3D city of your codebase, in the Agentville VS Code extension.",
+  "author": { "name": "Fábio Guerreiro" },
+  "license": "MIT",
+  "keywords": ["visualization", "vscode", "agents", "3d"]
+}

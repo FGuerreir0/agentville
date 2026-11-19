@@ -1,0 +1,36 @@
+name: Bug report
+description: Something in Agentville doesn't work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: |
+        Output of **Agentville: Show Log** (Command Palette), and the last lines of `~/.agentville/hook.log` if the city shows nothing.
+        Check it for paths or prompts you'd rather not share before posting.
+      render: text
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Agentville, VS Code, Claude Code (`claude --version`), and your OS.
+      placeholder: Agentville 0.1.0, VS Code 1.99, Claude Code 2.x, Windows 11
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where was Claude running?
+      options:
+        - Agentville chat
+        - Terminal
+        - Claude Code VS Code extension
+        - Other
