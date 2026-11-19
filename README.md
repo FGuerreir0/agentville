@@ -13,10 +13,6 @@
   <a href="#help">Help</a>
 </p>
 
-<p align="center">
-  <a href="https://buymeacoffee.com/fabioguerreiro"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-support-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
-</p>
-
 ![Claude and its subagents walking the streets of a city built from a real repo](docs/media/demo.gif)
 
 Your folders become districts and your files become buildings. While Claude Code works,
@@ -129,7 +125,8 @@ More about Agentville on the [website](https://fguerreir0.github.io/agentville/)
 
 ## Support
 
-If you enjoy watching your agents at work, you can [buy me a coffee](https://buymeacoffee.com/fabioguerreiro).
+Questions about your license or a purchase: **alcoda.support@gmail.com**. Bugs and ideas:
+[open an issue](https://github.com/FGuerreir0/agentville/issues/new/choose).
 
 ---
 

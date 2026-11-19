@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2 (2026-11-19)
+
+- Store page: support contact instead of a donation link.
+
+## 1.0.1 (2026-11-19)
+
+- Store page: install instructions for VS Code, Cursor and Windsurf.
+
 ## 1.0.0 (2026-11-19)
 
 First release, on [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville) for Cursor,
