@@ -3,436 +3,348 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agentville: watch Claude Code work in a 3D city of your code</title>
-<meta name="description" content="A VS Code extension that turns your codebase into a living 3D city and shows Claude Code and its subagents walking its streets as they read, edit, search and run commands.">
+<title>Agentville</title>
+<meta name="description" content="A VS Code extension that draws your repository as a 3D city and shows Claude Code and its subagents walking through it while they work.">
 <meta property="og:title" content="Agentville">
-<meta property="og:description" content="Watch Claude Code work inside a 3D city built from your codebase.">
+<meta property="og:description" content="Your repository as a city, with Claude Code walking through it.">
 <meta property="og:image" content="https://fguerreir0.github.io/agentville/media/og.jpg">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#050a16">
+<meta name="theme-color" content="#03050b">
 <link rel="icon" href="media/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #050a16;
-    --bg-2: #0a1226;
-    --panel: rgba(14, 24, 48, .72);
-    --line: rgba(110, 160, 255, .16);
-    --text: #e6edf9;
-    --muted: #8d9bb8;
-    --claude: #ff8a3d;
-    --cyan: #3de0ff;
-    --amber: #ffc045;
-    --violet: #a77bff;
-    --green: #3dffa0;
-    --red: #ff5470;
-    --mono: 'JetBrains Mono', ui-monospace, monospace;
-    --sans: 'Inter', system-ui, sans-serif;
+    --bg: #03050b;
+    --panel: rgba(6, 14, 28, .78);
+    --line: rgba(61, 242, 255, .22);
+    --text: #d6ecff;
+    --muted: #6f8fae;
+    --cyan: #3df2ff;
+    --claude: #ff8a4c;
+    --amber: #ffc94d;
+    --violet: #a98bff;
+    --green: #4dffa6;
+    --red: #ff5c7a;
+    --font: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
   }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background:
-      radial-gradient(ellipse 60% 40% at 50% -5%, rgba(255,138,61,.16), transparent 70%),
-      radial-gradient(ellipse 50% 40% at 90% 30%, rgba(61,224,255,.07), transparent 70%),
-      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 48px 48px,
-      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 48px 48px;
-    mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.35) 60%, rgba(0,0,0,.15));
-  }
-  a { color: var(--cyan); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  * { box-sizing: border-box; font-variant-ligatures: none; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 15px/1.7 var(--font); overflow-x: hidden; }
+  #orbs { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  main, header, footer { position: relative; z-index: 1; }
+  a { color: var(--cyan); text-underline-offset: 3px; }
+  a:hover { color: #fff; }
   img, video { display: block; max-width: 100%; }
-  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
-  .mono { font-family: var(--mono); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
 
-  /* nav */
-  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); background: rgba(5,10,22,.7); border-bottom: 1px solid var(--line); }
-  nav .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
-  .brand { display: flex; align-items: center; gap: 10px; font: 700 15px var(--mono); letter-spacing: .14em; color: var(--text); }
-  .brand img { width: 26px; height: 26px; border-radius: 6px; }
-  nav .links { display: flex; gap: 22px; margin-left: auto; font-size: 14px; }
-  nav .links a { color: var(--muted); }
-  nav .links a:hover { color: var(--text); text-decoration: none; }
-  @media (max-width: 720px) { nav .links a:not(.btn) { display: none; } }
-
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px;
-    font: 600 15px var(--sans); border: 1px solid var(--line); color: var(--text); background: var(--panel);
-    transition: transform .15s, box-shadow .15s, border-color .15s;
-  }
-  .btn:hover { text-decoration: none; transform: translateY(-1px); border-color: rgba(255,255,255,.3); }
-  .btn.primary { background: var(--claude); border-color: var(--claude); color: #1a0b00; box-shadow: 0 0 32px rgba(255,138,61,.35); }
-  .btn.primary:hover { box-shadow: 0 0 44px rgba(255,138,61,.55); }
-  nav .btn { padding: 7px 14px; font-size: 13px; }
-
-  /* hero */
-  .hero { padding: 84px 0 40px; text-align: center; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 99px;
-    font: 600 12px var(--mono); letter-spacing: .12em; text-transform: uppercase;
-    color: var(--amber); border: 1px solid rgba(255,192,69,.35); background: rgba(255,192,69,.07);
-  }
-  .badge i { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 10px var(--amber); animation: pulse 1.6s infinite; }
-  @keyframes pulse { 50% { opacity: .35; } }
-  h1 { font-size: clamp(38px, 6.4vw, 72px); line-height: 1.04; letter-spacing: -.035em; margin: 22px auto 18px; max-width: 900px; font-weight: 800; }
-  h1 .glow { color: var(--claude); text-shadow: 0 0 34px rgba(255,138,61,.55); }
-  .lede { font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 680px; margin: 0 auto 32px; }
-  .ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .sub { margin-top: 14px; font-size: 13px; color: var(--muted); }
-
-  .screen {
-    margin: 56px auto 0; max-width: 1080px; border-radius: 14px; overflow: hidden;
-    border: 1px solid rgba(110,160,255,.25); background: #000;
-    box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 30px 120px rgba(61,224,255,.12), 0 0 80px rgba(255,138,61,.12);
-  }
-  .screen .bar { display: flex; gap: 7px; align-items: center; padding: 11px 14px; background: #0c1428; border-bottom: 1px solid var(--line); }
-  .screen .bar span { width: 11px; height: 11px; border-radius: 50%; background: #26324d; }
-  .screen .bar em { margin-left: 10px; font: 12px var(--mono); color: var(--muted); font-style: normal; }
-  .screen video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-
-  /* sections */
-  section.wrap { padding-top: 112px; }
-  .kicker { font: 600 12px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); }
-  h2 { font-size: clamp(28px, 4vw, 44px); line-height: 1.12; letter-spacing: -.025em; margin: 10px 0 14px; font-weight: 800; }
-  .intro { color: var(--muted); max-width: 640px; margin: 0 0 40px; }
-  .center { text-align: center; }
-  .center .intro { margin-left: auto; margin-right: auto; }
-
-  /* why */
-  .why { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
-  .card h3 { margin: 12px 0 6px; font-size: 18px; }
-  .card p { margin: 0; color: var(--muted); font-size: 15px; }
-  .dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; }
-  .dot::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: currentColor; box-shadow: 0 0 16px currentColor, 0 0 4px currentColor; }
-  .dot { border: 1.5px solid currentColor; }
-
-  /* feature rows */
-  .feature { display: grid; grid-template-columns: 1.25fr 1fr; gap: 48px; align-items: center; margin-bottom: 72px; }
-  .feature.flip { grid-template-columns: 1fr 1.25fr; }
-  .feature.flip .shot { order: 2; }
-  .shot { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 20px 70px rgba(0,0,0,.5); }
-  .feature h3 { font-size: 26px; letter-spacing: -.02em; margin: 8px 0 12px; line-height: 1.2; }
-  .feature p { color: var(--muted); margin: 0 0 14px; }
-  .feature ul { margin: 0; padding: 0; list-style: none; }
-  .feature li { padding: 6px 0 6px 22px; position: relative; color: var(--text); font-size: 15px; }
-  .feature li::before { content: ''; position: absolute; left: 2px; top: 15px; width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--cyan)); box-shadow: 0 0 8px var(--c, var(--cyan)); }
-  @media (max-width: 860px) {
-    .feature, .feature.flip { grid-template-columns: 1fr; gap: 22px; }
-    .feature.flip .shot { order: 0; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: 0 0 24px rgba(61, 242, 255, .06), inset 0 0 18px rgba(61, 242, 255, .04);
   }
 
-  /* legend */
-  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
-  .row { display: flex; gap: 14px; align-items: center; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
-  .row code { flex: 0 0 auto; font: 600 13px var(--mono); padding: 4px 9px; border-radius: 6px; background: rgba(255,255,255,.05); color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); }
-  .row span { color: var(--muted); font-size: 14.5px; }
+  header .wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding-top: 20px; }
+  .brand { padding: 10px 16px; text-decoration: none; color: var(--text); display: block; }
+  .logo { font-weight: 700; letter-spacing: .32em; color: var(--cyan); text-shadow: 0 0 10px rgba(61, 242, 255, .6); font-size: 14px; }
+  .brand small { display: block; color: var(--muted); font-size: 12px; }
+  header nav { display: flex; gap: 18px; font-size: 13px; padding-top: 12px; flex-wrap: wrap; justify-content: flex-end; }
+  header nav a { color: var(--muted); text-decoration: none; }
+  header nav a:hover { color: var(--text); }
+  @media (max-width: 720px) { header nav a:not(:last-child) { display: none; } }
 
-  /* gallery */
-  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .gallery figure { margin: 0; }
-  .gallery figcaption { font-size: 13.5px; color: var(--muted); margin-top: 8px; }
-  @media (max-width: 860px) { .gallery { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
-
-  /* views */
-  .views { display: grid; grid-template-columns: 2.1fr 1fr; gap: 20px; align-items: stretch; }
-  .view { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
-  .view .shot { flex: 1; object-fit: cover; width: 100%; }
-  .view h3 { margin: 16px 6px 4px; font-size: 19px; }
-  .view .tag { font: 600 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--c); margin: 0 6px; }
-  .view p { margin: 0 6px 6px; color: var(--muted); font-size: 15px; }
-  .switch { margin-top: 22px; text-align: center; color: var(--muted); font-size: 15px; }
-  .switch kbd { font: 600 13px var(--mono); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text); }
-  @media (max-width: 860px) { .views { grid-template-columns: 1fr; } .view.small .shot { max-height: 520px; } }
-
-  /* privacy */
-  .privacy { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-  @media (max-width: 860px) { .privacy { grid-template-columns: 1fr; } }
-  pre {
-    margin: 0; padding: 20px; border-radius: 12px; background: #070d1c; border: 1px solid var(--line);
-    font: 13px/1.7 var(--mono); color: #b9c6e0; overflow-x: auto;
+  .hero { padding: 72px 0 0; }
+  h1 { font-size: clamp(26px, 4.2vw, 42px); line-height: 1.25; font-weight: 700; margin: 0 0 20px; max-width: 820px; letter-spacing: -.01em; }
+  h1 .c { color: var(--claude); }
+  .lede { color: var(--muted); max-width: 640px; margin: 0 0 26px; }
+  .actions { display: flex; gap: 22px; flex-wrap: wrap; font-size: 14px; }
+  .button {
+    display: inline-block; padding: 9px 16px; border: 1px solid var(--claude); border-radius: 4px;
+    color: var(--claude); text-decoration: none; font-weight: 500;
   }
-  pre .k { color: var(--violet); } pre .s { color: var(--green); } pre .c { color: #5b6a89; }
-  .checks { list-style: none; padding: 0; margin: 0; }
-  .checks li { padding: 12px 0 12px 34px; position: relative; border-bottom: 1px solid var(--line); }
-  .checks li:last-child { border: 0; }
-  .checks li::before { content: '✓'; position: absolute; left: 0; top: 11px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--bg); background: var(--green); box-shadow: 0 0 12px rgba(61,255,160,.5); }
-  .checks b { color: var(--text); }
-  .checks span { color: var(--muted); display: block; font-size: 15px; }
+  .button:hover { background: rgba(255, 138, 76, .1); color: var(--claude); }
+  .actions .plain { padding: 9px 0; color: var(--muted); }
+  .status { margin-top: 18px; font-size: 13px; color: var(--muted); }
+  .status b { color: var(--amber); font-weight: 500; }
 
-  /* pricing */
-  .price-card {
-    max-width: 520px; margin: 0 auto; padding: 40px 36px; text-align: center; border-radius: 18px;
-    background: linear-gradient(180deg, rgba(255,138,61,.10), rgba(14,24,48,.85) 45%);
-    border: 1px solid rgba(255,138,61,.4); box-shadow: 0 0 80px rgba(255,138,61,.15);
+  .video { margin-top: 44px; padding: 6px; }
+  .video video { width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; background: #000; }
+
+  section { padding-top: 96px; }
+  h2 { font-size: 13px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: var(--cyan); margin: 0 0 6px; }
+  h3 { font-size: 22px; line-height: 1.35; margin: 0 0 16px; font-weight: 700; max-width: 760px; }
+  p { margin: 0 0 14px; max-width: 680px; }
+  .muted { color: var(--muted); }
+
+  /* the activity-feed legend */
+  .legend { padding: 8px 0; margin-top: 26px; }
+  .legend div { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding: 7px 18px; font-size: 14px; }
+  .legend div + div { border-top: 1px solid rgba(61, 242, 255, .07); }
+  .legend b { font-weight: 700; }
+  .legend span { color: var(--muted); }
+  @media (max-width: 560px) { .legend div { grid-template-columns: 1fr; gap: 0; } }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 28px; }
+  .views { grid-template-columns: 2.2fr 1fr; align-items: start; }
+  @media (max-width: 820px) { .two, .views { grid-template-columns: 1fr; } }
+  figure { margin: 0; }
+  figure img { border: 1px solid var(--line); border-radius: 6px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  figcaption b { color: var(--text); font-weight: 500; }
+  .wide { margin-top: 28px; }
+
+  pre { margin: 24px 0 0; padding: 18px 20px; overflow-x: auto; font: 13px/1.65 var(--font); color: #a9c3dc; }
+  pre .k { color: var(--text); } pre .s { color: var(--green); } pre .n { color: var(--amber); } pre .c { color: #4d6580; }
+
+  .facts { margin-top: 26px; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .facts div { padding: 14px 18px; }
+  .facts div + div { border-left: 1px solid rgba(61, 242, 255, .1); }
+  .facts small { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .facts strong { font-size: 17px; font-weight: 700; }
+  @media (max-width: 760px) {
+    .facts { grid-template-columns: 1fr 1fr; }
+    .facts div:nth-child(3) { border-left: 0; }
+    .facts div:nth-child(n+3) { border-top: 1px solid rgba(61, 242, 255, .1); }
   }
-  .price { font: 800 64px/1 var(--sans); letter-spacing: -.04em; margin: 18px 0 6px; }
-  .price small { font-size: 18px; color: var(--muted); font-weight: 500; letter-spacing: 0; }
-  .price-card .checks { text-align: left; margin: 26px 0 30px; }
-  .price-card .checks li { padding-top: 9px; padding-bottom: 9px; }
-  .price-card .checks li::before { top: 9px; }
 
-  /* faq */
-  .faq { max-width: 780px; margin: 0 auto; }
-  details { border-bottom: 1px solid var(--line); padding: 4px 0; }
-  summary { cursor: pointer; list-style: none; padding: 16px 30px 16px 0; font-weight: 600; position: relative; }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: '+'; position: absolute; right: 4px; top: 12px; font: 400 24px var(--mono); color: var(--cyan); transition: transform .2s; }
-  details[open] summary::after { transform: rotate(45deg); }
-  details p { margin: 0 0 18px; color: var(--muted); }
+  dl { margin: 26px 0 0; max-width: 760px; }
+  dt { font-weight: 700; margin-top: 22px; }
+  dd { margin: 4px 0 0; color: var(--muted); }
 
-  section.final { text-align: center; padding-top: 130px; padding-bottom: 100px; }
-  footer { border-top: 1px solid var(--line); padding: 30px 0 40px; color: var(--muted); font-size: 13px; }
-  footer .wrap { display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between; }
+  footer { margin-top: 110px; border-top: 1px solid rgba(61, 242, 255, .1); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; padding-bottom: 36px; font-size: 12px; color: var(--muted); }
   footer a { color: var(--muted); }
-
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .badge i { animation: none; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
+<canvas id="orbs" aria-hidden="true"></canvas>
 
-<nav>
+<header>
   <div class="wrap">
-    <a class="brand" href="#"><img src="media/icon.png" alt="">AGENTVILLE</a>
-    <div class="links">
-      <a href="#features">Features</a>
+    <a class="brand panel" href="#">
+      <span class="logo">AGENTVILLE</span>
+      <small>VS Code extension</small>
+    </a>
+    <nav>
+      <a href="#city">The city</a>
       <a href="#views">Views</a>
+      <a href="#chat">Chat</a>
       <a href="#privacy">Privacy</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#faq">FAQ</a>
-      <a class="btn" href="https://github.com/FGuerreir0/agentville">GitHub</a>
-    </div>
-  </div>
-</nav>
-
-<header class="hero wrap">
-  <span class="badge"><i></i>Coming soon to VS Code</span>
-  <h1>Watch <span class="glow">Claude Code</span> work inside a city built from your code</h1>
-  <p class="lede">Every folder becomes a district, every file a building. Claude and its subagents walk the streets as they read, edit, search and run commands, live, in a VS Code panel.</p>
-  <div class="ctas">
-    <a class="btn primary" href="https://github.com/FGuerreir0/agentville/subscription">★ Watch for the launch</a>
-    <a class="btn" href="#features">See how it works ↓</a>
-  </div>
-  <p class="sub mono">Free for a week · then €2,99, once · works with your existing Claude Code</p>
-
-  <div class="screen reveal">
-    <div class="bar"><span></span><span></span><span></span><em>Agentville — ghostimport</em></div>
-    <video src="media/session.mp4" poster="media/landmarks.png" autoplay muted loop playsinline preload="metadata" aria-label="A recorded session: Claude and two subagents walking through the city"></video>
+      <a href="#price">Price</a>
+      <a href="https://github.com/FGuerreir0/agentville">GitHub</a>
+    </nav>
   </div>
 </header>
 
-<section class="wrap">
-  <div class="why">
-    <div class="card reveal"><div class="dot" style="color:var(--claude)"></div><h3>Know what it's doing</h3><p>Which files Claude reads, which it changes, which commands it runs. At a glance, without scrolling a log.</p></div>
-    <div class="card reveal"><div class="dot" style="color:var(--violet)"></div><h3>Follow every subagent</h3><p>Each one is its own orb in its own color, labelled <span class="mono">Explore</span>, <span class="mono">Plan</span>…, doing its own work, then reporting back.</p></div>
-    <div class="card reveal"><div class="dot" style="color:var(--amber)"></div><h3>See what changed</h3><p>Edited buildings stay amber. At the end of a session, the whole footprint of the change is right there.</p></div>
-    <div class="card reveal"><div class="dot" style="color:var(--red)"></div><h3>Never miss a prompt</h3><p>When Claude needs your permission it turns amber with a bouncing <b>!</b>. No more coming back to a session that waited for you all along.</p></div>
-  </div>
-</section>
+<main class="wrap">
 
-<section id="features" class="wrap">
-  <div class="center">
-    <div class="kicker">A city that works</div>
-    <h2>Your codebase, with Claude walking its streets</h2>
-    <p class="intro">Four landmarks stand for the work that happens outside your code. Agents walk to them like to any other building.</p>
-  </div>
+  <div class="hero">
+    <h1>Your repository as a city, with <span class="c">Claude Code</span> walking through it.</h1>
+    <p class="lede">Agentville draws every folder as a district and every file as a building. While Claude Code works, you see it walk to the files it reads, mark the ones it edits, and send its subagents off on their own errands.</p>
+    <div class="actions">
+      <a class="button" href="https://github.com/FGuerreir0/agentville">Watch the repo for the release</a>
+      <a class="plain" href="#city">How to read the city ↓</a>
+    </div>
+    <div class="status"><b>●</b> Not released yet. Coming to VS Code soon.</div>
 
-  <div class="feature reveal">
-    <img class="shot" src="media/landmarks.png" alt="The city with the HQ tower, the bank, the radar dish and the rocket launch site" loading="lazy">
-    <div>
-      <div class="kicker">The landmarks</div>
-      <h3>HQ, the bank, the radar and the launch pad</h3>
-      <ul>
-        <li style="--c:var(--claude)"><b>HQ tower</b>: where agents start, think about your prompt, and rest when they're done.</li>
-        <li style="--c:var(--green)"><b>The bank</b>: shell commands, scrolling across its stock ticker.</li>
-        <li style="--c:var(--cyan)"><b>The radar</b>: web fetches, searches and MCP tools fire a beam into the sky.</li>
-        <li style="--c:var(--violet)"><b>The rocket</b>: files outside your workspace light up its engines.</li>
-      </ul>
+    <div class="video panel">
+      <video src="media/session.mp4" poster="media/subagents.png" autoplay muted loop playsinline preload="metadata" aria-label="A recorded session: Claude and two subagents walking through the city"></video>
     </div>
   </div>
 
-  <div class="feature flip reveal">
-    <img class="shot" src="media/subagents.png" alt="Claude and two Explore subagents reading files in parallel" loading="lazy">
-    <div>
-      <div class="kicker">Subagents</div>
-      <h3>Watch the team spread out and come back</h3>
-      <p>Claude greps while two <span class="mono">Explore</span> subagents read files in parallel. Buildings they read glow cyan. When a subagent is done, it walks back to Claude and merges in a burst of its color.</p>
-      <p>The orbs don't fly over the roofs: they find their way through the avenues between folders and the alleys between files.</p>
+  <section id="city">
+    <h2>The city</h2>
+    <h3>Every tool call has a place to go.</h3>
+    <p class="muted">Claude is the orange orb. Subagents are smaller orbs in their own colors. They walk the streets between the buildings instead of flying over them, so you can follow where each one goes.</p>
+
+    <div class="legend panel">
+      <div><b style="color:var(--cyan)">Read</b><span>walks to the file's building; a cyan scan sweeps it</span></div>
+      <div><b style="color:var(--amber)">Edit, Write</b><span>sparks on the roof; the building stays amber for the rest of the session</span></div>
+      <div><b style="color:var(--violet)">Grep, Glob</b><span>a violet ring sweeps the folder's district</span></div>
+      <div><b style="color:var(--green)">Bash</b><span>walks to the bank; the command scrolls across its ticker</span></div>
+      <div><b style="color:var(--cyan)">WebFetch, MCP</b><span>walks to the radar dish, which fires a beam</span></div>
+      <div><b style="color:var(--violet)">Task</b><span>a subagent appears, labelled Explore, Plan…, and reports back when done</span></div>
+      <div><b style="color:var(--amber)">Permission</b><span>the orb turns amber with a bouncing ! until you answer</span></div>
+      <div><b style="color:var(--red)">Failure</b><span>a red flash and "✗ failed"</span></div>
     </div>
-  </div>
 
-  <div class="legend">
-    <div class="row reveal" style="--c:var(--cyan)"><code>Read</code><span>Walks to the building; a cyan scan sweeps it</span></div>
-    <div class="row reveal" style="--c:var(--amber)"><code>Edit</code><span>Amber ring and sparks on the roof, warm all session</span></div>
-    <div class="row reveal" style="--c:var(--violet)"><code>Grep</code><span>A violet ring sweeps the folder's district</span></div>
-    <div class="row reveal" style="--c:var(--green)"><code>Bash</code><span>Walks to the bank; the command scrolls on the ticker</span></div>
-    <div class="row reveal" style="--c:var(--cyan)"><code>WebFetch</code><span>Walks to the radar; the dish fires</span></div>
-    <div class="row reveal" style="--c:var(--violet)"><code>Task</code><span>A smaller orb appears, labelled with its type</span></div>
-    <div class="row reveal" style="--c:var(--amber)"><code>Permission</code><span>Turns amber with a bouncing <b>!</b></span></div>
-    <div class="row reveal" style="--c:var(--red)"><code>Failure</code><span>Flashes red with "✗ failed"</span></div>
-  </div>
-</section>
-
-<section id="views" class="wrap">
-  <div class="center">
-    <div class="kicker">Choose your view</div>
-    <h2>Big tab or tiny minimap. Your call.</h2>
-    <p class="intro">Watch the city in an editor tab with the chat beside it, or keep it small in the Explorer while you work in the terminal.</p>
-  </div>
-  <div class="views">
-    <div class="view reveal" style="--c:var(--claude)">
-      <img class="shot" src="media/subagents.png" alt="The big view: the city in an editor tab with the chat panel" loading="lazy">
-      <h3>Editor tab, with the chat</h3>
-      <div class="tag">Big view</div>
-      <p>The city fills a tab beside your code, and you talk to Claude right there: models, permissions, usage, all in one place.</p>
+    <div class="two">
+      <figure>
+        <img src="media/streets.png" alt="Two Explore subagents walking between buildings" loading="lazy">
+        <figcaption><b>Two Explore subagents</b> reading files while Claude searches.</figcaption>
+      </figure>
+      <figure>
+        <img src="media/shell.png" alt="Claude at the bank running npm test" loading="lazy">
+        <figcaption><b>npm test at the bank.</b> The amber buildings are the files edited so far.</figcaption>
+      </figure>
     </div>
-    <div class="view small reveal" style="--c:var(--cyan)">
-      <img class="shot" src="media/sidebar.png" alt="The small view: the city as a minimap in the Explorer side bar" loading="lazy">
-      <h3>In the Explorer</h3>
-      <div class="tag">Small view</div>
-      <p>A minimap under your folders. Perfect when Claude Code runs in your terminal.</p>
+  </section>
+
+  <section id="views">
+    <h2>Views</h2>
+    <h3>A full tab, or a minimap in the Explorer.</h3>
+    <p class="muted">Switch from the ⚙ menu or with <span style="color:var(--text)">Agentville: Switch View</span>. Both follow Claude Code wherever it runs: the terminal, the Claude Code extension, or Agentville's own chat.</p>
+    <div class="two views">
+      <figure>
+        <img src="media/subagents.png" alt="The city in an editor tab with the chat panel on the right" loading="lazy">
+        <figcaption><b>Editor tab.</b> The city with the chat beside it.</figcaption>
+      </figure>
+      <figure>
+        <img src="media/sidebar.png" alt="The city as a small view in the Explorer side bar" loading="lazy">
+        <figcaption><b>Explorer.</b> Under your folders, for terminal sessions.</figcaption>
+      </figure>
     </div>
-  </div>
-  <p class="switch reveal">Switch any time from the <kbd>⚙</kbd> menu or <kbd>Agentville: Switch View</kbd>. Either way, the city follows Claude Code wherever it runs.</p>
-</section>
+  </section>
 
-<section class="wrap">
-  <div class="feature reveal">
-    <img class="shot" src="media/permission.png" alt="A permission card with a diff and Allow, Deny and always-allow buttons" loading="lazy">
-    <div>
-      <div class="kicker">Built-in chat</div>
-      <h3>Chat with Claude, right beside the city</h3>
-      <p>The panel runs your installed Claude Code, with your existing login. No API key, nothing new to sign in to.</p>
-      <ul>
-        <li>Switch model, effort, permission mode and budget mid-conversation.</li>
-        <li>Permission cards with a real <b>diff</b> for edits and the full command for Bash.</li>
-        <li>Continue conversations you started in the terminal, from <b>History</b>.</li>
-        <li>Click a tool line and the camera flies to that file.</li>
-      </ul>
+  <section id="chat">
+    <h2>Chat</h2>
+    <h3>Claude Code itself, in a panel beside the city.</h3>
+    <p class="muted">It runs your installed <span style="color:var(--text)">claude</span> with your existing login, so there is no API key and nothing new to sign in to.</p>
+    <div class="two">
+      <figure>
+        <img src="media/permission.png" alt="A permission card for an edit, with a diff" loading="lazy">
+        <figcaption><b>Permission cards</b> show the diff of an edit or the full command, with the always-allow rules Claude Code suggests.</figcaption>
+      </figure>
+      <figure>
+        <img src="media/menu.png" alt="The menu of a building: open, ask Claude, add to message, focus" loading="lazy">
+        <figcaption><b>Click a building</b> to open the file or ask Claude about it. Shift+click to collect several.</figcaption>
+      </figure>
     </div>
-  </div>
+    <p class="wide muted">Each run shows its time, tokens and cost. Bars show the context window and your plan's 5-hour and weekly limits, with a warning before you hit them. You can switch model, effort and permission mode mid-conversation, set a budget, and pick up conversations you started in the terminal.</p>
+  </section>
 
-  <div class="feature flip reveal">
-    <img class="shot" src="media/menu.png" alt="The building menu: Open file, Ask Claude about this file, Add to message, Focus" loading="lazy">
-    <div>
-      <div class="kicker">Point and ask</div>
-      <h3>Click a building, ask about it</h3>
-      <p>Open the file, ask Claude about it, or add it to your message. Shift+click a few buildings or whole districts, then ask about all of them at once.</p>
+  <section id="privacy">
+    <h2>Privacy</h2>
+    <h3>Your code stays on your machine.</h3>
+    <p class="muted">A small Claude Code plugin sends events to VS Code over 127.0.0.1, with a token from your home folder. Its hooks run async, so Claude never waits for them. This is the part that decides what an event carries, straight from <a href="https://github.com/FGuerreir0/agentville/blob/main/plugin/scripts/emit.mjs">plugin/scripts/emit.mjs</a>:</p>
+<pre class="panel"><span class="c">// The fields of a hook payload the city uses. Never file contents or tool output.</span>
+<span class="k">event</span>:       payload.hook_event_name,
+<span class="k">tool</span>:        payload.tool_name,
+<span class="k">file</span>:        input.file_path ?? input.notebook_path,
+<span class="k">pattern</span>:     cut(input.pattern, <span class="n">80</span>),
+<span class="k">command</span>:     cut(input.command, <span class="n">120</span>),
+<span class="k">description</span>: cut(input.description, <span class="n">100</span>),
+<span class="k">query</span>:       cut(input.query, <span class="n">80</span>),
+<span class="c">// a web fetch sends only the host, not the URL</span>
+event.url = <span class="s">new URL(input.url).host</span>
+<span class="c">// a prompt is cut to its first 80 characters</span>
+event.prompt = cut(payload.prompt, <span class="n">80</span>)</pre>
+  </section>
+
+  <section id="price">
+    <h2>Price</h2>
+    <h3>Try it for a week, then buy it once.</h3>
+    <div class="facts panel">
+      <div><small>Free trial</small><strong>7 days of use</strong></div>
+      <div><small>Then</small><strong>€2,99 once</strong></div>
+      <div><small>API key</small><strong>Not needed</strong></div>
+      <div><small>Needs</small><strong>VS Code 1.99+</strong></div>
     </div>
-  </div>
+    <p class="wide muted">Only days on which the city sees Claude at work count toward the week, within 30 days of the first. You need Claude Code installed; Agentville uses your existing plan.</p>
+  </section>
 
-  <div class="feature reveal">
-    <img class="shot" src="media/shell.png" alt="Claude at the bank running npm test, with edited buildings glowing amber" loading="lazy">
-    <div>
-      <div class="kicker">Usage, in check</div>
-      <h3>Time, tokens, cost and plan limits for every run</h3>
-      <ul>
-        <li style="--c:var(--amber)">Context window, <b>5-hour</b> and <b>weekly</b> plan limit bars, with reset times.</li>
-        <li style="--c:var(--amber)">A warning before you hit your plan limit.</li>
-        <li style="--c:var(--amber)">A per-conversation budget that Claude Code stops at.</li>
-        <li style="--c:var(--amber)">"Send with Haiku" for quick questions, when it actually saves.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="gallery">
-    <figure class="reveal"><img class="shot" src="media/waiting.png" alt="Claude waiting for permission" loading="lazy"><figcaption>Waiting for you: amber, with a bouncing !</figcaption></figure>
-    <figure class="reveal"><img class="shot" src="media/closeup.png" alt="An edit: amber ring and sparks on a roof" loading="lazy"><figcaption>An edit lands: sparks on the roof</figcaption></figure>
-    <figure class="reveal"><img class="shot" src="media/tooltip.png" alt="Tooltip with a file's path and read/edit counts" loading="lazy"><figcaption>Hover a building: how often it was read and edited</figcaption></figure>
-  </div>
-</section>
-
-<section id="privacy" class="wrap">
-  <div class="privacy">
-    <div class="reveal">
-      <div class="kicker">Privacy</div>
-      <h2>Your code never leaves your machine</h2>
-      <ul class="checks">
-        <li><b>Local only</b><span>The Claude Code plugin talks to 127.0.0.1, with a token from your home folder. Nothing else.</span></li>
-        <li><b>No contents, ever</b><span>File contents, tool output and full prompts never leave the hook.</span></li>
-        <li><b>Never slows Claude down</b><span>Every hook is async and exits cleanly, whether or not VS Code is open.</span></li>
-        <li><b>Read it yourself</b><span>The plugin is open source: <a href="https://github.com/FGuerreir0/agentville/blob/main/plugin/scripts/emit.mjs">plugin/scripts/emit.mjs</a>.</span></li>
-      </ul>
-    </div>
-    <pre class="reveal"><span class="c">// Everything an event carries to the city</span>
-{
-  <span class="k">event</span>:   <span class="s">"PreToolUse"</span>,
-  <span class="k">session</span>: <span class="s">"…"</span>, <span class="k">agent</span>: <span class="s">"…"</span>,
-  <span class="k">tool</span>:    <span class="s">"Read"</span>,
-  <span class="k">file</span>:    <span class="s">"src/hook.ts"</span>,
-  <span class="k">pattern</span>: <span class="c">// search pattern, ≤ 80 chars</span>
-  <span class="k">command</span>: <span class="c">// shell command, ≤ 120 chars</span>
-  <span class="k">prompt</span>:  <span class="c">// first 80 chars of your prompt</span>
-  <span class="k">host</span>:    <span class="c">// host of a web fetch, not the URL</span>
-}</pre>
-  </div>
-</section>
-
-<section id="pricing" class="wrap center">
-  <div class="kicker">Pricing</div>
-  <h2>Less than a coffee. Once.</h2>
-  <p class="intro">Try everything free for a week of use. If it earns its place on your screen, keep it.</p>
-  <div class="price-card reveal">
-    <span class="badge"><i></i>Launching soon</span>
-    <div class="price">€2,99 <small>one-time</small></div>
-    <div class="mono" style="color:var(--muted);font-size:13px">No subscription · free week first</div>
-    <ul class="checks">
-      <li><b>7 days of use free</b><span>Only days Claude is at work count, within 30 days.</span></li>
-      <li><b>The whole thing</b><span>City, subagents, chat, permissions, metrics, side bar view.</span></li>
-      <li><b>Uses your Claude Code</b><span>Your plan, your login. No API key, no extra account.</span></li>
-    </ul>
-    <a class="btn primary" href="https://github.com/FGuerreir0/agentville/subscription">★ Get notified at launch</a>
-  </div>
-</section>
-
-<section id="faq" class="wrap">
-  <div class="center">
-    <div class="kicker">FAQ</div>
+  <section id="questions">
     <h2>Questions</h2>
-  </div>
-  <div class="faq">
-    <details class="reveal"><summary>What do I need?</summary><p>VS Code 1.99 or later, Claude Code, and Node.js 18 or later (Claude Code already needs it). Windows, macOS and Linux.</p></details>
-    <details class="reveal"><summary>Do I have to use Agentville's chat?</summary><p>No. The city follows Claude Code wherever you run it: the terminal, the Claude Code VS Code extension, or Agentville's own chat. If you prefer the terminal, put the city in the Explorer side bar as a minimap.</p></details>
-    <details class="reveal"><summary>Does it need an API key or cost extra tokens?</summary><p>No. It uses your installed Claude Code and your existing login, so it runs on your plan. Watching the city uses no tokens at all.</p></details>
-    <details class="reveal"><summary>Will it slow Claude down?</summary><p>No. The plugin's hooks are all asynchronous: Claude never waits for them.</p></details>
-    <details class="reveal"><summary>How big a repo can it handle?</summary><p>Up to 4,000 files by default, adjustable up to 20,000. <span class="mono">node_modules</span>, build output and similar folders are left out.</p></details>
-    <details class="reveal"><summary>Is this made by Anthropic?</summary><p>No. Agentville is an independent project, not affiliated with or endorsed by Anthropic.</p></details>
-  </div>
-</section>
+    <dl>
+      <dt>Do I have to use Agentville's chat?</dt>
+      <dd>No. The city follows Claude Code in the terminal and in the Claude Code extension too.</dd>
+      <dt>Does it increase my Claude usage?</dt>
+      <dd>No. The city only listens to events Claude Code already sends; it never calls the model. The chat is a normal Claude Code session with nothing added to your prompts, so it uses the same as the terminal would. It also helps you spend less: a budget per conversation, a warning before your plan's limits, and Haiku for quick questions.</dd>
+      <dt>Does it slow Claude down?</dt>
+      <dd>No. The plugin's hooks are asynchronous.</dd>
+      <dt>How big a repository can it draw?</dt>
+      <dd>Up to 4,000 files by default, and up to 20,000 in the settings. node_modules, build output and similar folders are left out.</dd>
+      <dt>Which systems?</dt>
+      <dd>Windows, macOS and Linux.</dd>
+      <dt>Is it made by Anthropic?</dt>
+      <dd>No. It is an independent project.</dd>
+    </dl>
+  </section>
 
-<section class="final wrap">
-  <img src="media/icon.png" alt="" width="72" height="72" style="margin:0 auto 18px;border-radius:16px;box-shadow:0 0 50px rgba(255,138,61,.35)">
-  <h2>Give your agents a city.</h2>
-  <p class="intro" style="margin:0 auto 28px">Agentville is coming soon to VS Code. Watch the repo and you'll hear the day it lands.</p>
-  <div class="ctas">
-    <a class="btn primary" href="https://github.com/FGuerreir0/agentville/subscription">★ Watch on GitHub</a>
-    <a class="btn" href="https://github.com/FGuerreir0/agentville/issues/new/choose">Suggest an idea</a>
-  </div>
-</section>
+</main>
 
 <footer>
   <div class="wrap">
-    <span>© 2026 Fábio Guerreiro · Agentville is not affiliated with Anthropic. Claude and Claude Code are trademarks of Anthropic.</span>
+    <span>Agentville · not affiliated with Anthropic. Claude and Claude Code are trademarks of Anthropic.</span>
     <span><a href="https://github.com/FGuerreir0/agentville">GitHub</a> · <a href="https://github.com/FGuerreir0/agentville/issues">Issues</a> · <a href="https://github.com/FGuerreir0/agentville/blob/main/CHANGELOG.md">Changelog</a></span>
   </div>
 </footer>
 
 <script>
-  const io = new IntersectionObserver(entries => {
-    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
-  }, { rootMargin: '0px 0px -8% 0px' })
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el))
+// A few orbs walking a grid of streets behind the page, like the agents in the city:
+// right angles only, a short trail, a soft pool of light. Kept faint and few.
+(() => {
+  const canvas = document.getElementById('orbs')
+  const ctx = canvas.getContext('2d')
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const STEP = 72
+  const colors = ['255,138,76', '169,139,255', '77,255,166', '61,242,255']
+  let w = 0, h = 0, dpr = 1, orbs = []
+
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, 2)
+    w = innerWidth; h = innerHeight
+    canvas.width = w * dpr; canvas.height = h * dpr
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  }
+  const cols = () => Math.ceil(w / STEP) + 1
+  const rows = () => Math.ceil(h / STEP) + 1
+  const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+
+  function make(i) {
+    const gx = Math.floor(Math.random() * cols()), gy = Math.floor(Math.random() * rows())
+    return {
+      color: colors[i], size: i === 0 ? 3.2 : 2.3, speed: i === 0 ? 34 : 26 + Math.random() * 10,
+      x: gx * STEP, y: gy * STEP, gx, gy, dir: DIRS[Math.floor(Math.random() * 4)], t: 0, trail: [],
+    }
+  }
+  function nextCell(o) {
+    // mostly keep going; turn now and then; never step off the grid
+    let options = DIRS.filter(d => !(d[0] === -o.dir[0] && d[1] === -o.dir[1]))
+    if (Math.random() < .7) options = [o.dir, ...options]
+    for (const d of options) {
+      const nx = o.gx + d[0], ny = o.gy + d[1]
+      if (nx >= 0 && ny >= 0 && nx < cols() && ny < rows()) { o.dir = d; return }
+    }
+    o.dir = [-o.dir[0], -o.dir[1]]
+  }
+
+  function draw(o) {
+    for (let i = 0; i < o.trail.length; i++) {
+      const p = o.trail[i], a = (i / o.trail.length) * .22
+      ctx.fillStyle = `rgba(${o.color},${a})`
+      ctx.fillRect(p[0] - 1, p[1] - 1, 2, 2)
+    }
+    const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.size * 9)
+    g.addColorStop(0, `rgba(${o.color},.28)`); g.addColorStop(1, `rgba(${o.color},0)`)
+    ctx.fillStyle = g
+    ctx.beginPath(); ctx.arc(o.x, o.y, o.size * 9, 0, Math.PI * 2); ctx.fill()
+    ctx.fillStyle = `rgba(${o.color},.85)`
+    ctx.beginPath(); ctx.arc(o.x, o.y, o.size, 0, Math.PI * 2); ctx.fill()
+  }
+
+  let last = performance.now()
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, .05); last = now
+    ctx.clearRect(0, 0, w, h)
+    for (const o of orbs) {
+      o.t += (o.speed * dt) / STEP
+      if (o.t >= 1) { o.gx += o.dir[0]; o.gy += o.dir[1]; o.t = 0; nextCell(o) }
+      o.x = (o.gx + o.dir[0] * o.t) * STEP
+      o.y = (o.gy + o.dir[1] * o.t) * STEP
+      o.trail.push([o.x, o.y]); if (o.trail.length > 70) o.trail.shift()
+      draw(o)
+    }
+    if (!still) requestAnimationFrame(frame)
+  }
+
+  resize()
+  orbs = colors.map((_, i) => make(i))
+  orbs.forEach(nextCell)
+  addEventListener('resize', resize)
+  requestAnimationFrame(frame)
+})()
 </script>
 </body>
 </html>
