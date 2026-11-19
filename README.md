@@ -12,6 +12,10 @@
   <a href="#help">Help</a>
 </p>
 
+<p align="center">
+  <a href="https://buymeacoffee.com/fabioguerreiro"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-support-FFDD00?logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
+</p>
+
 ![Claude and its subagents walking the streets of a city built from a real repo](docs/media/demo.gif)
 
 Your folders become districts and your files become buildings. While Claude Code works,
@@ -87,6 +91,13 @@ Your code never leaves your machine. The plugin only talks to VS Code on your ow
 and only sends file paths and tool names, never file contents or Claude's output. It never
 slows Claude down. The plugin is open source: [`plugin/`](plugin/).
 
+## Does it increase my Claude usage?
+
+No. The city only listens to events Claude Code already sends; it never calls the model.
+The chat is a normal Claude Code session with nothing added to your prompts, so it uses the
+same as the terminal would. It also helps you spend less: a budget per conversation, a
+warning before your plan's limits, and Haiku for quick questions.
+
 ## Pricing
 
 Free for a week of use, then **€2,99, once**. No subscription.
@@ -101,6 +112,10 @@ it received and why anything was ignored. Most often the fix is one of these:
 
 Still stuck, or have an idea? [Open an issue](https://github.com/FGuerreir0/agentville/issues/new/choose).
 More about Agentville on the [website](https://fguerreir0.github.io/agentville/).
+
+## Support
+
+If you enjoy watching your agents at work, you can [buy me a coffee](https://buymeacoffee.com/fabioguerreiro).
 
 ---
 
