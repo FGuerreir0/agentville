@@ -48,19 +48,32 @@ No API key: it uses your existing Claude Code login.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/media/subagents.png" alt="Claude and two subagents reading files"><br><sub>Claude and two subagents reading files</sub></td>
+    <td width="50%"><img src="docs/media/streets.png" alt="Two subagents walking the streets between buildings"><br><sub>Subagents walking the streets</sub></td>
     <td width="50%"><img src="docs/media/waiting.png" alt="Claude waiting for permission"><br><sub>Waiting for your permission</sub></td>
   </tr>
 </table>
 
+## Choose your view
+
+<table>
+  <tr>
+    <td width="68%" valign="top"><img src="docs/media/subagents.png" alt="The big view: the city in an editor tab with the chat beside it"></td>
+    <td width="32%" valign="top"><img src="docs/media/sidebar.png" alt="The small view: the city as a minimap in the Explorer side bar"></td>
+  </tr>
+  <tr>
+    <td valign="top"><b>Big: an editor tab, with the chat.</b> The city fills a tab beside your code, and you can talk to Claude right there.</td>
+    <td valign="top"><b>Small: in the Explorer.</b> A minimap under your folders, for when you run Claude Code in a terminal.</td>
+  </tr>
+</table>
+
+Switch any time with the **⚙** button in the city, or **Agentville: Switch View** from the
+Command Palette. Either way, the city follows Claude Code wherever it runs.
+
 ### Chat with Claude, right beside the city
 
-Agentville has its own chat panel: pick the model and mode, approve edits with a diff, and see
-time, tokens, cost and your plan's usage limits for every run. Click any building to open the
-file or ask Claude about it.
-
-Prefer the terminal? The city follows Claude Code wherever it runs. You can also shrink it
-into the Explorer side bar as a minimap (setting `agentville.view`: `sidebar`).
+In the big view, Agentville has its own chat panel: pick the model and mode, approve edits
+with a diff, and see time, tokens, cost and your plan's usage limits for every run. Click any
+building to open the file or ask Claude about it.
 
 <img src="docs/media/permission.png" alt="A permission card with a diff">
 
