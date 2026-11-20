@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.4 (2026-11-20)
+
+- Nothing runs when VS Code starts: Agentville checks for its Claude Code plugin only the
+  first time you open the city.
+- Updating the Claude Code plugin now asks first, like installing it.
+- The license activation is named with a random id made once per install, instead of
+  anything derived from the machine.
+- Store listing: plainer description and keywords.
+
 ## 1.0.3 (2026-11-20)
 
 - Windows: finds Claude Code when npm or nvm only put shims on the PATH (`claude`,
