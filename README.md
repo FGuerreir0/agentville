@@ -57,6 +57,7 @@ You need [Claude Code](https://code.claude.com) and VS Code 1.99 or later.
 | uses the web | walks to the radar dish, which fires |
 | starts a subagent | a smaller orb in its own color appears |
 | needs your permission | turns amber with a bouncing **!** |
+| a file has errors (the Problems panel) | its building throbs red until they're fixed |
 
 <table>
   <tr>
@@ -64,6 +65,21 @@ You need [Claude Code](https://code.claude.com) and VS Code 1.99 or later.
     <td width="50%"><img src="docs/media/waiting.png" alt="Claude waiting for permission"><br><sub>Waiting for your permission</sub></td>
   </tr>
 </table>
+
+### A city that lives
+
+Even when Claude is quiet, the city goes on. Each part has its own switch in the **⚙** menu,
+under **City life**:
+
+- **Construction:** a new file's building rises from the ground, a deleted one comes down,
+  and buildings grow or shrink as their files do.
+- **Git:** a soft light floats over every file with uncommitted changes, a commit sets off
+  fireworks over HQ, and the branch name stands on HQ's plaza.
+- **Trails:** the streets agents walk most glow, like worn paths, and the districts where they
+  spend their time warm up.
+- **Traffic:** little lights travel the streets.
+- **Lights:** a building stays lit for a couple of minutes after it's read or edited.
+- **Day & night:** the sky follows the time of day.
 
 ## Choose your view
 
@@ -78,7 +94,7 @@ You need [Claude Code](https://code.claude.com) and VS Code 1.99 or later.
   </tr>
 </table>
 
-Switch any time with the **⚙** button in the city, or **Agentville: Switch View** from the
+Agentville starts in the Explorer. Switch any time with the **⚙** button in the city (it remembers your choice), or **Agentville: Switch View** from the
 Command Palette. Either way, the city follows Claude Code wherever it runs.
 
 ### Chat with Claude, right beside the city

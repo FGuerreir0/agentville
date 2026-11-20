@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.0.3 (2026-11-20)
+
+- Windows: finds Claude Code when npm or nvm only put shims on the PATH (`claude`,
+  `claude.cmd`), and when Claude Code's own folder isn't on the PATH VS Code sees. Installing
+  the plugin and the chat no longer fail there; no need to set `agentville.claudePath`.
+- New setting, **Hidden files** in the ⚙ menu (`agentville.showHiddenFiles`): also turn files
+  and folders whose names start with a dot (`.github`, `.env`, `.superpowers`…) into
+  buildings. Off by default; generated folders such as `.git` always stay out.
+- Files with errors (the same ones as in the Problems panel) turn their building red, with a
+  slow throb, until they're fixed; hovering one shows how many.
+- Adding your API key for the first time gets a proper thank-you, and the city celebrates at HQ.
+- Shell commands show what they touch: cyan lasers to the files and folders a command names,
+  and, when it finishes, amber lasers to the files it changed on disk, which keep the edit mark.
+- The Explorer view no longer starts zoomed out into the dark when it was collapsed at startup,
+  and it frames the city closer.
+- City life, each part with its own switch in the ⚙ menu: buildings rise for new files, come
+  down for deleted ones and grow with their files; Git markers over uncommitted files,
+  fireworks on a commit and the branch at HQ; worn paths where agents walk and districts that
+  warm up; traffic on the streets; buildings that stay lit after use; a sky that follows the
+  time of day.
+- The city now starts in the Explorer, under your folders. Switching to the editor tab (with
+  the chat) from the ⚙ menu is remembered, so it opens there from then on.
+
 ## 1.0.2 (2026-11-19)
 
 - Store page: support contact instead of a donation link.
