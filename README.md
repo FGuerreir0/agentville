@@ -118,7 +118,7 @@ and Agentville's city shows those sessions just the same.
 
 ### Controls
 
-**Drag** to orbit · **scroll** to zoom · **right-drag** to pan · **click an agent** to follow it.
+**Drag** to orbit · **scroll** to zoom · **right-drag** to pan · **click an agent** to follow it · **Close-up** rides along just behind Claude, between the buildings (drag, scroll or Esc to leave).
 
 ## Privacy
 

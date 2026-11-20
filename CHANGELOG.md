@@ -20,6 +20,8 @@
   fireworks on a commit and the branch at HQ; worn paths where agents walk and districts that
   warm up; traffic on the streets; buildings that stay lit after use; a sky that follows the
   time of day.
+- **Close-up**: a camera that rides along just behind Claude (or the agent you follow), at
+  street height, turning with it, and moving in whenever a building would block the view.
 - The city now starts in the Explorer, under your folders. Switching to the editor tab (with
   the chat) from the ⚙ menu is remembered, so it opens there from then on.
 
