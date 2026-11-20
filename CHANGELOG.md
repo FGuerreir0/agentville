@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5 (2026-11-21)
+
+- Themes, from the ⚙ menu: **Midnight** (the original look) and **Miami**, a neon coast at
+  sunset with a purple sky, pink and turquoise glow, and a striped sun on the horizon.
+
 ## 1.0.4 (2026-11-20)
 
 - Nothing runs when VS Code starts: Agentville checks for its Claude Code plugin only the

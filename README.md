@@ -81,6 +81,13 @@ under **City life**:
 - **Lights:** a building stays lit for a couple of minutes after it's read or edited.
 - **Day & night:** the sky follows the time of day.
 
+### Themes
+
+Pick a look in the same menu: **Midnight** (deep blue, cyan outlines) or **Miami** (a neon
+coast at sunset: purple sky, pink and turquoise glow, a striped sun on the horizon).
+
+<img src="docs/media/theme-miami.png" alt="The city in the Miami theme: purple sky, turquoise buildings and a striped sun on the horizon">
+
 ## Choose your view
 
 <table>
