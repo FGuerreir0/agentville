@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.8 (2026-11-23)
+
+- A **Check for updates** button at the bottom of the ⚙ menu, next to the version.
+- Commands answer in a dialog: checking for updates shows its progress and what it found,
+  and installing the plugin says when it's already installed.
+- Miami at night: the moon shows a different phase each time the city opens.
+
 ## 1.0.7 (2026-11-23)
 
 - Simpler camera controls: **Busiest** and a reset icon. Click an agent to follow it;
