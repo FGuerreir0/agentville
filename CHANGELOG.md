@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.7 (2026-11-23)
+
+- Simpler camera controls: **Busiest** and a reset icon. Click an agent to follow it;
+  double-click it for the close-up.
+- Miami: the sun sinks into the horizon at sunrise and sunset and turns yellow toward noon;
+  at night a moon takes its place.
+- The ⚙ menu scrolls when the view is too short for it; bigger icons in the Explorer.
+
 ## 1.0.6 (2026-11-23)
 
 - Agentville keeps itself up to date when you installed it from a `.vsix` file: once a day it
