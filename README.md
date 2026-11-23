@@ -123,7 +123,7 @@ and Agentville's city shows those sessions just the same.
 
 ### Controls
 
-**Drag** to orbit · **scroll** to zoom · **right-drag** to pan · **click an agent** to follow it · **Close-up** rides along just behind Claude, between the buildings (drag, scroll or Esc to leave) · **Busiest** keeps the camera on whichever agent is doing the most, and works in the close-up too.
+**Drag** to orbit · **scroll** to zoom · **right-drag** to pan · **click an agent** to follow it · **double-click** it to ride along in the close-up, just behind it between the buildings (drag, scroll or Esc to leave) · **Busiest** keeps the camera on whichever agent is doing the most, in the close-up too · the frame icon resets the view.
 
 ## Privacy
 
