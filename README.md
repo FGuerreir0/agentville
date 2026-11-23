@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Watch Claude Code work inside a 3D city built from your code.</b><br>
-  For VS Code, Cursor and Windsurf.<br><br>
+  For VS Code.<br><br>
   <a href="https://open-vsx.org/extension/fguerreir0/agentville"><img src="https://img.shields.io/open-vsx/v/fguerreir0/agentville?label=Open%20VSX&color=3df2ff" alt="Open VSX version"></a><br><br>
   <a href="https://fguerreir0.github.io/agentville/">Website</a> ·
   <a href="#install">Install</a> ·
@@ -26,17 +26,15 @@ amber with a **!**, so you never miss it.
 
 ## Install
 
-1. **Install Agentville:**
-   - **Cursor, Windsurf, VSCodium:** search for **Agentville** in the Extensions view, or open it on
-     [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville).
-   - **VS Code:** the Marketplace listing is on its way. Until then, install it from a file:
-     1. On [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville), click **Download**
-        to get `fguerreir0.agentville-<version>.vsix`.
-     2. In VS Code, open the Extensions view (`Ctrl+Shift+X`, or `Cmd+Shift+X` on a Mac), click
-        **⋯** at its top, choose **Install from VSIX…**, and pick the file.
-     3. Reload the window when VS Code asks.
+1. **Install Agentville in VS Code.** The Marketplace listing is on its way. Until then,
+   install it from a file:
+   1. On [Open VSX](https://open-vsx.org/extension/fguerreir0/agentville), click **Download**
+      to get `fguerreir0.agentville-<version>.vsix`.
+   2. In VS Code, open the Extensions view (`Ctrl+Shift+X`, or `Cmd+Shift+X` on a Mac), click
+      **⋯** at its top, choose **Install from VSIX…**, and pick the file.
+   3. Reload the window when VS Code asks.
 
-     Or from a terminal: `code --install-extension fguerreir0.agentville-<version>.vsix`.
+   Or from a terminal: `code --install-extension fguerreir0.agentville-<version>.vsix`.
 
      > **Don't double-click the `.vsix`.** On Windows with Visual Studio installed, that opens
      > Visual Studio's installer, which fails with *"One or more extensions are for Visual
@@ -125,7 +123,7 @@ and Agentville's city shows those sessions just the same.
 
 ### Controls
 
-**Drag** to orbit · **scroll** to zoom · **right-drag** to pan · **click an agent** to follow it · **Close-up** rides along just behind Claude, between the buildings (drag, scroll or Esc to leave).
+**Drag** to orbit · **scroll** to zoom · **right-drag** to pan · **click an agent** to follow it · **Close-up** rides along just behind Claude, between the buildings (drag, scroll or Esc to leave) · **Busiest** keeps the camera on whichever agent is doing the most, and works in the close-up too.
 
 ## Privacy
 

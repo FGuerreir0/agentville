@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.6 (2026-11-23)
+
+- Agentville keeps itself up to date when you installed it from a `.vsix` file: once a day it
+  looks for a new version on Open VSX, installs it (checked against its SHA-256), and offers to
+  reload the window, never while a Claude session is running. Setting `agentville.autoUpdate`:
+  `install` (default), `install-and-reload`, or `off`. Or run **Agentville: Check for Updates**.
+  Installs from your editor's extension gallery are still updated by the editor.
+- New camera button, **Busiest**: it follows whichever agent is doing the most right now, and
+  moves on when another one gets clearly busier (in the close-up too).
+- Explorer view: long agent names and statuses no longer squeeze each other or get cut in half;
+  with more agents than fit, the last line says how many more.
+- Store page: install steps for VS Code.
+
 ## 1.0.5 (2026-11-21)
 
 - Themes, from the ⚙ menu: **Midnight** (the original look) and **Miami**, a neon coast at
